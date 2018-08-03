@@ -15,6 +15,7 @@ task build
 //declare a task to create a zip of the app
 task zip(type: Zip) {
 	from ('.') {
+	        echo "From build file ......"
 		include "*"
 		include "bin/**"
 		include "data/**"
