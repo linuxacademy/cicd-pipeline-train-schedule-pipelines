@@ -17,4 +17,4 @@ Once it is running, you can access it in a browser at [http://localhost:3000](ht
 This Should Trigger the build
 
 Second test to check if automatic build responds
-editted on 24Aug2018
+editted on 24Aug2018.
