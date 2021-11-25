@@ -17,5 +17,8 @@ pipeline {
 
         }
       }
+      stage('3-Deplo') {
+        
+      }
     }
   }
