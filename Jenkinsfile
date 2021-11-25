@@ -18,7 +18,12 @@ pipeline {
         }
       }
       stage('3-Deplo') {
-        steps {}
+        steps {
+          echo "Starting deployment automation"
+          echo 'Running deployment automation'
+          echo 'Ending deployment automation'
+
+        }
       }
     }
   }
