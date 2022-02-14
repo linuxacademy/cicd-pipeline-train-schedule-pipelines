@@ -1,74 +1,24 @@
-pipeline {
-    agent any
-    stages {
-        stage('Build') {
-            steps {
-                echo 'Running build automation'
-                sh './gradlew build --no-daemon'
-                archiveArtifacts artifacts: 'dist/trainSchedule.zip'
-            }
-        }
-        stage('DeployToStaging') {
-            when {
-                branch 'master'
-            }
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'webserver_login', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
-                    sshPublisher(
-                        failOnError: true,
-                        continueOnError: false,
-                        publishers: [
-                            sshPublisherDesc(
-                                configName: 'staging',
-                                sshCredentials: [
-                                    username: "$USERNAME",
-                                    encryptedPassphrase: "$USERPASS"
-                                ], 
-                                transfers: [
-                                    sshTransfer(
-                                        sourceFiles: 'dist/trainSchedule.zip',
-                                        removePrefix: 'dist/',
-                                        remoteDirectory: '/tmp',
-                                        execCommand: 'sudo /usr/bin/systemctl stop train-schedule && rm -rf /opt/train-schedule/* && unzip /tmp/trainSchedule.zip -d /opt/train-schedule && sudo /usr/bin/systemctl start train-schedule'
-                                    )
-                                ]
-                            )
-                        ]
-                    )
-                }
-            }
-        }
-        stage('DeployToProduction') {
-            when {
-                branch 'master'
-            }
-            steps {
-                input 'Does the staging environment look OK?'
-                milestone(1)
-                withCredentials([usernamePassword(credentialsId: 'webserver_login', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
-                    sshPublisher(
-                        failOnError: true,
-                        continueOnError: false,
-                        publishers: [
-                            sshPublisherDesc(
-                                configName: 'production',
-                                sshCredentials: [
-                                    username: "$USERNAME",
-                                    encryptedPassphrase: "$USERPASS"
-                                ], 
-                                transfers: [
-                                    sshTransfer(
-                                        sourceFiles: 'dist/trainSchedule.zip',
-                                        removePrefix: 'dist/',
-                                        remoteDirectory: '/tmp',
-                                        execCommand: 'sudo /usr/bin/systemctl stop train-schedule && rm -rf /opt/train-schedule/* && unzip /tmp/trainSchedule.zip -d /opt/train-schedule && sudo /usr/bin/systemctl start train-schedule'
-                                    )
-                                ]
-                            )
-                        ]
-                    )
-                }
-            }
-        }
-    }
+ pipeline {
+      agent any
+      stages {
+          stage('Tag and Push') {
+              environment {
+		  GIT_TAG = "GG-${BUILD_NUMBER}"
+	      }
+	      when {
+                  expression { return params.current_status == "closed" && params.merged == true }
+              }
+              steps {
+                  withCredentials([usernameColonPassword(credentialsId: 'github', variable: 'GIT_PASS')] {
+		  sh('''
+			git config --global user.email "tauanov.aidos@gmail.com"
+			git config --global user.name  "altynbai"
+			git config --global push.default matching
+			git tag -a $GIT_TAG -m "[Jenkins CI] New Tag"
+			git push https://${GIT_PASS}@github.com/altynbai/cicd-pipeline-train-schedule-pipelines.git $GIT_TAG
+		  ''')
+                    		}
+			}
+		}
+	}
 }
