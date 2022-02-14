@@ -9,7 +9,7 @@ pipeline {
                 expression { return params.current_status == "closed" && params.merged == true }
             }
             steps {
-		withCredentials([string(credentialsId: 'github_creds', variable: 'credentialsVariable')]) {
+		withCredentials([string(credentialsId: 'new-github-token', variable: 'credentialsVariable')]) {
                 sh('''
 		 	git config --global user.email "tauanov.aidos@gmail.com"
 			git config --global user.name  "altynbai"
