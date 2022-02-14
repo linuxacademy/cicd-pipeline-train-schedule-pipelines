@@ -15,7 +15,7 @@ pipeline {
 			git config --global user.name  "altynbai"
 			git config --global push.default matching
 			git tag -a $GIT_TAG -m "[Jenkins CI] New Tag"
-			git push $GIT_TAG, credentialsId: 'github_creds', url: 'https://github.com/altynbai/cicd-pipeline-train-schedule-pipelines.git'
+			git push https://github.com/altynbai/cicd-pipeline-train-schedule-pipelines.git $GIT_TAG
 			
 		''')
 		    
