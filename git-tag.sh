@@ -1,8 +1,9 @@
 #!/bin/sh
+set -x
 
 #Get the highest tag number
 VERSION=`git describe --abbrev=0 --tags`
-VERSION=${VERSION:-'0.0.0'}
+VERSION=${VERSION:-'1.2.0'}
 
 #Get number parts
 MAJOR="${VERSION%%.*}"; VERSION="${VERSION#*.}"
