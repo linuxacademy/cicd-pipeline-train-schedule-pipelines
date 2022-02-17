@@ -18,7 +18,6 @@ pipeline {
 			git push https://${GIT_PASS}@github.com/altynbai/cicd-pipeline-train-schedule-pipelines.git $GIT_TAG
 		  """)
                   }
-              }
           }
       }
 }
