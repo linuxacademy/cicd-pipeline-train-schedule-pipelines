@@ -1,0 +1,11 @@
+trigger:
+  - main
+pool:
+  vmImage: devopsazurevm
+
+stages:
+  - stage: CI
+    jobs:
+    - job: Build
+      steps:
+        - script: sh './gradlew build --no-daemon'
