@@ -1,0 +1,5 @@
+{
+  "dn": "cn=alice,ou=users,dc=learn,dc=example",
+  "rotation_period": "24h",
+  "username": "alice"
+}
